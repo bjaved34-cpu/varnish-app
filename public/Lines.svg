@@ -1,0 +1,48 @@
+<svg width="768" height="494" viewBox="0 0 768 494" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_405_10385)">
+<g clip-path="url(#clip1_405_10385)">
+<line x1="0.5" x2="0.5" y2="768" stroke="#EAECF0"/>
+<line x1="48.5" x2="48.5" y2="768" stroke="#EAECF0"/>
+<line x1="96.5" x2="96.5" y2="768" stroke="#EAECF0"/>
+<line x1="144.5" x2="144.5" y2="768" stroke="#EAECF0"/>
+<line x1="192.5" x2="192.5" y2="768" stroke="#EAECF0"/>
+<line x1="240.5" x2="240.5" y2="768" stroke="#EAECF0"/>
+<line x1="288.5" x2="288.5" y2="768" stroke="#EAECF0"/>
+<line x1="336.5" x2="336.5" y2="768" stroke="#EAECF0"/>
+<line x1="384.5" x2="384.5" y2="768" stroke="#EAECF0"/>
+<line x1="432.5" x2="432.5" y2="768" stroke="#EAECF0"/>
+<line x1="480.5" x2="480.5" y2="768" stroke="#EAECF0"/>
+<line x1="528.5" x2="528.5" y2="768" stroke="#EAECF0"/>
+<line x1="576.5" x2="576.5" y2="768" stroke="#EAECF0"/>
+<line x1="624.5" x2="624.5" y2="768" stroke="#EAECF0"/>
+<line x1="672.5" x2="672.5" y2="768" stroke="#EAECF0"/>
+<line x1="720.5" x2="720.5" y2="768" stroke="#EAECF0"/>
+</g>
+<rect x="0.5" y="0.5" width="767" height="767" stroke="#EAECF0"/>
+<g clip-path="url(#clip2_405_10385)">
+<line y1="13.5" x2="768" y2="13.5" stroke="#EAECF0"/>
+<line y1="61.5" x2="768" y2="61.5" stroke="#EAECF0"/>
+<line y1="109.5" x2="768" y2="109.5" stroke="#EAECF0"/>
+<line y1="157.5" x2="768" y2="157.5" stroke="#EAECF0"/>
+<line y1="205.5" x2="768" y2="205.5" stroke="#EAECF0"/>
+<line y1="253.5" x2="768" y2="253.5" stroke="#EAECF0"/>
+<line y1="301.5" x2="768" y2="301.5" stroke="#EAECF0"/>
+<line y1="349.5" x2="768" y2="349.5" stroke="#EAECF0"/>
+<line y1="397.5" x2="768" y2="397.5" stroke="#EAECF0"/>
+<line y1="445.5" x2="768" y2="445.5" stroke="#EAECF0"/>
+<line y1="493.5" x2="768" y2="493.5" stroke="#EAECF0"/>
+</g>
+<rect x="0.5" y="-273.5" width="767" height="767" stroke="#EAECF0"/>
+</g>
+<defs>
+<clipPath id="clip0_405_10385">
+<rect width="768" height="494" fill="white"/>
+</clipPath>
+<clipPath id="clip1_405_10385">
+<rect width="768" height="768" fill="white"/>
+</clipPath>
+<clipPath id="clip2_405_10385">
+<rect y="-274" width="768" height="768" fill="white"/>
+</clipPath>
+</defs>
+</svg>
