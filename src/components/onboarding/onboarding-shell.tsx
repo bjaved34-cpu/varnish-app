@@ -51,20 +51,14 @@ export function OnboardingShell({ children, currentStep }: OnboardingShellProps)
       <main className="relative flex-1 bg-white md:rounded-[12px] md:my-3 md:mr-3 flex flex-col items-center overflow-hidden">
         {/* Background Lines - Top Center */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-[0.6]"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[768px] h-[495px] pointer-events-none z-0"
           aria-hidden="true"
           style={{
             backgroundImage: 'url("/BackgroundLines.svg")',
             backgroundPosition: 'top center',
             backgroundRepeat: 'no-repeat',
-            backgroundSize: 'auto'
+            backgroundSize: 'contain'
           }}
-        />
-
-        {/* Background Grid - Top Center, 768x495px */}
-        <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[768px] h-[495px] dot-grid-light opacity-[0.4] pointer-events-none"
-          aria-hidden="true"
         />
 
         {/* Form Content - Centered with 104px top margin relative to the white panel */}
