@@ -53,7 +53,7 @@ export function CongratsMessage() {
                     className="w-full"
                 >
                     <Button
-                        onClick={() => alert("Redirecting to Dashboard...")}
+                        onClick={() => router.push("/dashboard")}
                         className="h-14 w-full rounded-xl bg-[#1a2332] text-base font-semibold text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all hover:bg-[#243044] hover:shadow-[0_12px_40px_rgb(0,0,0,0.16)] active:scale-[0.98]"
                     >
                         Continue to Dashboard
