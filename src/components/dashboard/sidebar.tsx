@@ -15,7 +15,7 @@ const menuItems = [
         title: "Domains",
         icon: "/domainIcon.svg",
         hasDropdown: true,
-        subItems: ["List of Domains", "List of Domains"],
+        subItems: ["List of Domains", "Add New Domain"],
     },
     {
         title: "Hosting",

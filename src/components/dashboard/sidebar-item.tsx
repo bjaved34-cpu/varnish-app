@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter, usePathname } from "next/navigation";
 
 interface SidebarItemProps {
     title: string;
@@ -13,6 +14,7 @@ interface SidebarItemProps {
     isActive?: boolean;
     defaultOpen?: boolean;
 }
+
 
 export function SidebarItem({
     title,
@@ -24,12 +26,15 @@ export function SidebarItem({
 }: SidebarItemProps) {
     const [isOpen, setIsOpen] = useState(defaultOpen);
     const [activeSubIndex, setActiveSubIndex] = useState<number | null>(null);
+    const router = useRouter();
+    const pathname = usePathname();
 
     const toggleDropdown = () => {
         if (hasDropdown) {
             setIsOpen(!isOpen);
         }
     };
+
 
     return (
         <div className="w-full">
@@ -63,18 +68,28 @@ export function SidebarItem({
             {hasDropdown && isOpen && subItems && (
                 <div className="relative mt-1 ml-6 pl-4 py-1">
                     {/* Vertical connecting line */}
-                    <div className="absolute left-0 top-0 bottom-4 w-[1px] bg-white opacity-20" />
+                    <div className="absolute left-0 top-0 bottom-4 w-[1px] bg-white" />
 
                     <div className="space-y-2">
                         {subItems.map((item, index) => (
                             <button
                                 key={index}
-                                onClick={() => setActiveSubIndex(index)}
+                                onClick={() => {
+                                    setActiveSubIndex(index);
+
+                                    if (item === "Add New Domain") {
+                                        router.push("/dashboard/add-domain");
+                                    } else {
+                                        router.push("/dashboard");
+                                    }
+                                }}
                                 className={cn(
-                                    "flex items-center transition-all rounded-[7px] text-left",
-                                    "text-xs font-medium",
-                                    index === 0
-                                        ? "bg-white text-black shadow-[0_4px_12px_rgba(0,0,0,0.1)] h-[28px] w-[152px] justify-start px-[10px]"
+                                    "flex items-center transition-all rounded-[7px] text-left text-xs font-medium",
+                                    (
+                                        (item === "Add New Domain" && pathname === "/dashboard/add-domain") ||
+                                        (item === "List of Domains" && pathname === "/dashboard")
+                                    )
+                                        ? "bg-white text-black shadow-[0_4px_12px_rgba(0,0,0,0.1)] h-[28px] w-[152px] justify-start px-[16px]"
                                         : "text-[#ACAEAF] hover:text-white hover:bg-[#1e2d40] py-2 w-full px-4"
                                 )}
                             >
