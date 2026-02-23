@@ -21,5 +21,5 @@ export function AddDomain() {
                 </Button>
             </div>
         </header>
-    );
+    )
 }
