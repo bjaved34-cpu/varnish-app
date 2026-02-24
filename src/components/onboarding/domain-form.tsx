@@ -82,7 +82,7 @@ export function DomainForm() {
                         <Input
                             id="domain"
                             type="text"
-                            placeholder="Enter you domain"
+                            placeholder="Enter your Domain"
                             value={form.domain}
                             onChange={handleChange}
                             aria-required="true"

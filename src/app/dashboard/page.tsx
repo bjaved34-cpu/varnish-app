@@ -23,13 +23,13 @@ export default function DashboardPage() {
                     />
                     <StatCard
                         title="SSL"
-                        value="2 Sites"
+                        value="Expiring in 7d"
                         trend="7%"
                         icon={ShieldCheck}
                     />
                     <StatCard
                         title="Images"
-                        value="2 Sites"
+                        value="18 Images Saved"
                         trend="7%"
                         icon={ImageIcon}
                     />
