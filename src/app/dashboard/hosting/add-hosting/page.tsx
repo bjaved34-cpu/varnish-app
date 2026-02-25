@@ -7,13 +7,14 @@ import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { CacheSplit } from "@/components/dashboard/cache-split";
 import { Server, ShieldCheck, Image as ImageIcon } from "lucide-react";
 import { AddDomain } from "@/components/dashboard/add-domain";
-import { AddDomainForm } from "@/components/dashboard/add-domain-form";
+import { AddHostingForm } from "@/components/dashboard/hosting/add-hosting-form";
+import { HostingHeader } from "@/components/dashboard/hosting/hosting-header";
 
-export default function AddDomainPage() {
+export default function AddHostingPage() {
     return (
         <div className="flex flex-col h-full bg-white">
-            <AddDomain name="Add Domain" />
-            <AddDomainForm />
+            <AddDomain name="Add Hosting" />
+            <AddHostingForm />
         </div>
     );
 }

@@ -21,6 +21,7 @@ const menuItems = [
         title: "Hosting",
         icon: "/hostingIcon.svg",
         hasDropdown: true,
+        subItems: ["List of Hosting", "Add New Hosting"],
     },
     {
         title: "SSL",

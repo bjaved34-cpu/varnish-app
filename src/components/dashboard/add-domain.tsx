@@ -2,13 +2,15 @@
 
 import { ArrowLeft, Plus, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-export function AddDomain() {
+interface headingName {
+    name: string
+}
+export function AddDomain({ name }: headingName) {
     return (
-        <header className="flex flex-col md:flex-row md:h-[102px] w-full items-start md:items-center justify-between px-6 md:px-8 py-6 gap-4 border-b border-gray-100/50">
+        <header className="flex flex-col md:flex-row md:h-[102px] w-full items-start md:items-center justify-between px-6 md:px-8 py-6 gap-4">
             <div className="flex flex-col">
                 <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#1a2332]">
-                    Add Domain
+                    {name}
                 </h1>
             </div>
 

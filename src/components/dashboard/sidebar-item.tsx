@@ -79,6 +79,10 @@ export function SidebarItem({
 
                                     if (item === "Add New Domain") {
                                         router.push("/dashboard/add-domain");
+                                    } else if (item === "Add New Hosting") {
+                                        router.push("/dashboard/hosting/add-hosting");
+                                    } else if (item === "List of Hosting") {
+                                        router.push("/dashboard/hosting");
                                     } else {
                                         router.push("/dashboard");
                                     }
@@ -87,7 +91,9 @@ export function SidebarItem({
                                     "flex items-center transition-all rounded-[7px] text-left text-xs font-medium",
                                     (
                                         (item === "Add New Domain" && pathname === "/dashboard/add-domain") ||
-                                        (item === "List of Domains" && pathname === "/dashboard")
+                                        (item === "List of Domains" && pathname === "/dashboard") ||
+                                        (item === "List of Hosting" && pathname === "/dashboard/hosting") ||
+                                        (item === "Add New Hosting" && pathname === "/dashboard/hosting/add-hosting")
                                     )
                                         ? "bg-white text-black shadow-[0_4px_12px_rgba(0,0,0,0.1)] h-[28px] w-[152px] justify-start px-[16px]"
                                         : "text-[#ACAEAF] hover:text-white hover:bg-[#1e2d40] py-2 w-full px-4"
