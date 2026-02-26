@@ -27,6 +27,7 @@ const menuItems = [
         title: "SSL",
         icon: "/sslIcon.svg",
         hasDropdown: true,
+        subItems: ["List of SSL", "Add New SSL"],
     },
     {
         title: "Images",

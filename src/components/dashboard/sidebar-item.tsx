@@ -83,6 +83,10 @@ export function SidebarItem({
                                         router.push("/dashboard/hosting/add-hosting");
                                     } else if (item === "List of Hosting") {
                                         router.push("/dashboard/hosting");
+                                    } else if (item === "List of SSL") {
+                                        router.push("/dashboard/ssl");
+                                    } else if (item === "Add New SSL") {
+                                        router.push("/dashboard/ssl/add-new-ssl");
                                     } else {
                                         router.push("/dashboard");
                                     }
@@ -93,7 +97,9 @@ export function SidebarItem({
                                         (item === "Add New Domain" && pathname === "/dashboard/add-domain") ||
                                         (item === "List of Domains" && pathname === "/dashboard") ||
                                         (item === "List of Hosting" && pathname === "/dashboard/hosting") ||
-                                        (item === "Add New Hosting" && pathname === "/dashboard/hosting/add-hosting")
+                                        (item === "Add New Hosting" && pathname === "/dashboard/hosting/add-hosting") ||
+                                        (item === "List of SSL" && pathname === "/dashboard/ssl") ||
+                                        (item === "Add New SSL" && pathname === "/dashboard/ssl/add-new-ssl")
                                     )
                                         ? "bg-white text-black shadow-[0_4px_12px_rgba(0,0,0,0.1)] h-[28px] w-[152px] justify-start px-[16px]"
                                         : "text-[#ACAEAF] hover:text-white hover:bg-[#1e2d40] py-2 w-full px-4"

@@ -2,16 +2,21 @@
 
 import { Plus, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-export function DashboardHeader() {
+interface HeaderProps {
+    title: string;
+    description: string;
+    buttonLabel: string;
+    buttonIcon: React.ReactNode;
+}
+export function Header({ title, description, buttonLabel, buttonIcon }: HeaderProps) {
     return (
         <header className="flex flex-col md:flex-row md:h-[102px] w-full items-start md:items-center justify-between px-6 md:px-8 py-6 gap-4 border-b border-gray-100/50">
             <div className="flex flex-col">
                 <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#1a2332]">
-                    Domains
+                    {title}
                 </h1>
                 <p className="text-xs md:text-sm font-medium text-[#8899aa]">
-                    Manage, connect and monitor all your domains.
+                    {description}
                 </p>
             </div>
 
@@ -27,7 +32,7 @@ export function DashboardHeader() {
                     className="flex h-9 md:h-10 items-center gap-2 rounded-lg bg-[#1a2332] px-3 md:px-4 text-xs md:text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#243044] active:scale-[0.98]"
                 >
                     <Plus className="h-4 w-4" />
-                    <span>Domain</span>
+                    <span>{buttonLabel}</span>
                 </Button>
             </div>
         </header>

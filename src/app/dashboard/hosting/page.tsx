@@ -1,16 +1,15 @@
 "use client";
 
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { CacheSplit } from "@/components/dashboard/cache-split";
-import { Server, ShieldCheck, Image as ImageIcon } from "lucide-react";
+import { Server, ShieldCheck, Image as ImageIcon, Plus } from "lucide-react";
 import { HostingList } from "@/components/dashboard/hosting/hosting-list";
-import { HostingHeader } from "@/components/dashboard/hosting/hosting-header";
+import { Header } from "@/components/dashboard/header";
 export default function Hosting() {
     return (
         <div className="flex flex-col h-full bg-white">
-            <HostingHeader />
+            <Header title="Hosting" description="Manage, connect and monitor all your hostings. " buttonLabel="Hosting" buttonIcon={<Plus />} />
 
             <div className="flex-1 p-8 pt-6 space-y-8">
                 {/* Stat Cards Container */}
