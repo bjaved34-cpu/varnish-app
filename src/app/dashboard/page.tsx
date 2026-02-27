@@ -6,7 +6,7 @@ import { DomainList } from "@/components/dashboard/domain-list";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { CacheSplit } from "@/components/dashboard/cache-split";
 import { Server, ShieldCheck, Image as ImageIcon, Plus } from "lucide-react";
-import { Header } from "@/components/dashboard/header";
+import Header from "@/components/dashboard/header";
 import { SSLList } from "@/components/dashboard/ssl/ssl-list";
 
 export default function DashboardPage() {

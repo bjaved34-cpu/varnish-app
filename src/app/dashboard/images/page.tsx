@@ -10,26 +10,32 @@ import { DomainTable } from "@/components/dashboard/domain-table";
 export default function Hosting() {
     return (
         <div className="flex flex-col h-full bg-white">
-            <Header title="Hosting" description="Manage, connect and monitor all your hostings. " buttonLabel="Hosting" buttonIcon={<Plus />} />
+            <Header title="Image Optimization" description="Monitor compression savings and configure rules for image optimization through Varnish " buttonLabel="Images" buttonIcon={<Plus />} />
 
             <div className="flex-1 p-8 pt-6 space-y-8">
                 {/* Stat Cards Container */}
                 <div className="flex flex-wrap gap-6">
                     <StatCard
-                        title="Hosting"
-                        value="2 Sites"
+                        title="Total images optimized"
+                        value="14.2 k"
                         trend="7%"
                         icon={Server}
                     />
                     <StatCard
-                        title="SSL"
-                        value="Expiring in 7d"
+                        title="Data Saved"
+                        value="3.6 GB"
                         trend="7%"
                         icon={ShieldCheck}
                     />
                     <StatCard
-                        title="Images"
-                        value="18 Images Saved"
+                        title="Average Compression"
+                        value="24 %"
+                        trend="7%"
+                        icon={ImageIcon}
+                    />
+                    <StatCard
+                        title="Conversion"
+                        value="WebP enabled"
                         trend="7%"
                         icon={ImageIcon}
                     />

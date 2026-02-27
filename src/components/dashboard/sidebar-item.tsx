@@ -32,6 +32,12 @@ export function SidebarItem({
     const toggleDropdown = () => {
         if (hasDropdown) {
             setIsOpen(!isOpen);
+        } else if (title === "Billings") {
+            router.push("/dashboard/billings");
+        } else if (title === "Settings") {
+            router.push("/dashboard/settings");
+        } else if (title === "Support") {
+            // We have a dropdown for support now, but this is handled by subItems
         }
     };
 
@@ -42,7 +48,9 @@ export function SidebarItem({
                 onClick={toggleDropdown}
                 className={cn(
                     "flex items-center w-full px-3 py-2.5 text-sm font-medium transition-all group rounded-lg",
-                    "hover:bg-[#1e2d40] text-[#ACAEAF] hover:text-white"
+                    (!hasDropdown && ((pathname.startsWith("/dashboard/billings") && title === "Billings") || (pathname.startsWith("/dashboard/settings") && title === "Settings")))
+                        ? "bg-[#1e2d40] text-white"
+                        : "hover:bg-[#1e2d40] text-[#ACAEAF] hover:text-white"
                 )}
             >
                 <div className="flex items-center flex-1">
@@ -87,6 +95,16 @@ export function SidebarItem({
                                         router.push("/dashboard/ssl");
                                     } else if (item === "Add New SSL") {
                                         router.push("/dashboard/ssl/add-new-ssl");
+                                    }
+                                    else if (item === "Add New Images") {
+                                        router.push("/dashboard/images/add-images");
+                                    }
+                                    else if (item === "List of Images") {
+                                        router.push("/dashboard/images");
+                                    } else if (item === "List of Support") {
+                                        router.push("/dashboard/support");
+                                    } else if (item === "Add New Ticket") {
+                                        router.push("/dashboard/support/add-new-ticket");
                                     } else {
                                         router.push("/dashboard");
                                     }
@@ -99,7 +117,11 @@ export function SidebarItem({
                                         (item === "List of Hosting" && pathname === "/dashboard/hosting") ||
                                         (item === "Add New Hosting" && pathname === "/dashboard/hosting/add-hosting") ||
                                         (item === "List of SSL" && pathname === "/dashboard/ssl") ||
-                                        (item === "Add New SSL" && pathname === "/dashboard/ssl/add-new-ssl")
+                                        (item === "Add New SSL" && pathname === "/dashboard/ssl/add-new-ssl") ||
+                                        (item === "Add New Images" && pathname === "/dashboard/images/add-images") ||
+                                        (item === "List of Images" && pathname === "/dashboard/images") ||
+                                        (item === "List of Support" && pathname === "/dashboard/support") ||
+                                        (item === "Add New Ticket" && pathname === "/dashboard/support/add-new-ticket")
                                     )
                                         ? "bg-white text-black shadow-[0_4px_12px_rgba(0,0,0,0.1)] h-[28px] w-[152px] justify-start px-[16px]"
                                         : "text-[#ACAEAF] hover:text-white hover:bg-[#1e2d40] py-2 w-full px-4"

@@ -33,6 +33,7 @@ const menuItems = [
         title: "Images",
         icon: "/imagesIson.svg",
         hasDropdown: true,
+        subItems: ["List of Images", "Add New Images"],
     },
     {
         title: "Billings",
@@ -45,7 +46,8 @@ const bottomMenuItems = [
     {
         title: "Support",
         icon: "/supportIcon.svg",
-        hasDropdown: false,
+        hasDropdown: true,
+        subItems: ["List of Support", "Add New Ticket"],
     },
     {
         title: "Settings",

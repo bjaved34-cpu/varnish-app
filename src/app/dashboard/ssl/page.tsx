@@ -1,16 +1,15 @@
 "use client";
 
 import { StatCard } from "@/components/dashboard/stat-card";
-import { PerformanceChart } from "@/components/dashboard/performance-chart";
-import { CacheSplit } from "@/components/dashboard/cache-split";
-import { Server, ShieldCheck, Image as ImageIcon, Plus } from "lucide-react";
-import { HostingList } from "@/components/dashboard/hosting/hosting-list";
-import { Header } from "@/components/dashboard/header";
+import { Server, ShieldCheck, Image as ImageIcon } from "lucide-react";
 import { SSLMessage } from "@/components/dashboard/ssl/ssl-message";
+import { AddDomain } from "@/components/dashboard/add-domain";
+import { DomainTable } from "@/components/dashboard/domain-table";
+
 export default function Ssl() {
     return (
         <div className="flex flex-col h-full bg-white">
-            <Header title="SSL" description="Manage, renew or install SSL Certificates for your domain services" buttonLabel="SSL" buttonIcon={<Plus />} />
+            <AddDomain name="SSL Certificates" />
 
             <div className="flex-1 p-8 pt-6 space-y-8">
 
@@ -45,7 +44,7 @@ export default function Ssl() {
                 </div>
 
                 {/* Domain List Section */}
-                <HostingList />
+                <DomainTable title="List of Domains" searchPlaceholder="Search Domains" />
 
             </div>
         </div>
