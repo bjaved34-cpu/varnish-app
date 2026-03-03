@@ -1,53 +1,74 @@
 "use client";
 
-
-import { StatCard } from "@/components/dashboard/stat-card";
-import { DomainList } from "@/components/dashboard/domain-list";
+import Header from "@/components/dashboard/header";
+import { DashboardStatCard } from "@/components/dashboard/dashboard-stat-card";
+import { SummaryCard } from "@/components/dashboard/summary-card";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
 import { CacheSplit } from "@/components/dashboard/cache-split";
-import { Server, ShieldCheck, Image as ImageIcon, Plus } from "lucide-react";
-import Header from "@/components/dashboard/header";
-import { SSLList } from "@/components/dashboard/ssl/ssl-list";
+import { ActivityFeed } from "@/components/dashboard/activity-feed";
+import { Plus } from "lucide-react";
 
 export default function DashboardPage() {
     return (
         <div className="flex flex-col h-full bg-white">
-            <Header title="Dashboard" description="Manage, connect and monitor all your domains. " buttonLabel="Domain" buttonIcon={<Plus />} />
+            <Header
+                title="Dashboard"
+                description="Manage, connect and monitor all your domains."
+                buttonLabel="Download"
+                buttonIcon={<Plus />}
+            />
 
-            <div className="flex-1 p-8 pt-6 space-y-8">
-                {/* Stat Cards Container */}
-                <div className="flex flex-wrap gap-6">
-                    <StatCard
-                        title="Hosting"
-                        value="2 Sites"
-                        trend="7%"
-                        icon={Server}
+            <div className="flex-1 p-6 space-y-6">
+                {/* Top Row Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <DashboardStatCard
+                        title="CDN Reqs"
+                        value="1.2 M"
+                        trend="+12.1%"
+                        trendType="up"
                     />
-                    <StatCard
-                        title="SSL"
-                        value="Expiring in 7d"
-                        trend="7%"
-                        icon={ShieldCheck}
+                    <DashboardStatCard
+                        title="Active Domains"
+                        value="3"
+                        trend="+12.1%"
+                        trendType="up"
                     />
-                    <StatCard
-                        title="Images"
-                        value="18 Images Saved"
-                        trend="7%"
-                        icon={ImageIcon}
+                    <DashboardStatCard
+                        title="Bandwidth"
+                        value="48 GB"
+                        trend="+12.1%"
+                        trendType="up"
+                    />
+                    <DashboardStatCard
+                        title="Cache Hit"
+                        value="92 %"
+                        trend="-9.8%"
+                        trendType="down"
                     />
                 </div>
 
-                {/* Domain List Section */}
-                <SSLList />
+                {/* Middle Row Summary Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                    <SummaryCard title="Hosting" value="2 sites" />
+                    <SummaryCard title="Domains" value="3 Domains" />
+                    <SummaryCard title="Varnish" value="92% hit" />
+                    <SummaryCard title="SSL" value="expiring soon" />
+                    <SummaryCard title="Images" value="18% saved" />
+                </div>
 
-                {/* Performance Charts Section */}
-                <div className="flex flex-col lg:flex-row gap-6 pb-8 items-stretch">
-                    <div className="w-full lg:w-[56%] flex">
+                {/* Charts Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2">
                         <PerformanceChart />
                     </div>
-                    <div className="w-full lg:flex-1 flex">
+                    <div className="lg:col-span-1">
                         <CacheSplit />
                     </div>
+                </div>
+
+                {/* Activity Feed Section */}
+                <div className="pb-8">
+                    <ActivityFeed />
                 </div>
             </div>
         </div>

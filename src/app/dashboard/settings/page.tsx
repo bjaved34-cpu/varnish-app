@@ -8,16 +8,25 @@ import { NotificationsTab } from "@/components/dashboard/settings/notifications-
 
 export default function SettingsPage() {
     return (
-        <div className="flex-1 w-full bg-slate-50 min-h-full p-4 md:p-8 rounded-tl-2xl">
-            <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 bg-white p-4 md:p-8 rounded-xl border border-slate-100 shadow-sm min-h-[80vh]">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-                    <Button variant="default" className="bg-[#101828] text-white hover:bg-[#101828]/90">
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back
-                    </Button>
+        <div className="flex flex-col h-full bg-white w-full">
+            <header className="flex flex-col md:flex-row md:h-[102px] w-full items-start md:items-center justify-between px-6 md:px-8 py-6 gap-4">
+                <div className="flex flex-col">
+                    <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#1a2332]">
+                        Settings
+                    </h1>
                 </div>
 
+                <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                    <Button
+                        className="flex h-9 md:h-10 items-center gap-2 rounded-lg bg-[#1a2332] px-3 md:px-4 text-xs md:text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#243044] active:scale-[0.98]"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        <span>Back</span>
+                    </Button>
+                </div>
+            </header>
+
+            <div className="bg-white p-6 sm:p-8 w-full">
                 <Tabs defaultValue="profile" className="w-full">
                     <div className="w-full overflow-x-auto pb-4 -mb-4 custom-scrollbar">
                         <TabsList className="h-10 items-center justify-start rounded-md bg-slate-100 p-1 text-slate-500 w-auto inline-flex min-w-max">

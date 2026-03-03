@@ -56,6 +56,17 @@ const sslData = [
         plan: "Enterprise",
         status: "Approved",
     },
+    {
+        id: 4,
+        domain: "cdn-site.io",
+        cpu: "8v cores",
+        ram: "16 GB",
+        disk: "320 GB",
+        bandwidth: "1.2 TB",
+        uptime: "99.7%",
+        plan: "Enterprise",
+        status: "Approved",
+    },
 ]
 
 export function SSLList() {
@@ -93,6 +104,10 @@ export function SSLList() {
     const isAllSelected =
         filteredData.length > 0 &&
         selectedRows.length === filteredData.length
+
+    const [currentPage, setCurrentPage] = React.useState(1)
+    const [rowsPerPage, setRowsPerPage] = React.useState(5)
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage)
 
     return (
         <div className="w-full bg-[#F6F6F6] rounded-xl p-4 border border-[#E8E8E8] flex flex-col">
@@ -267,36 +282,69 @@ export function SSLList() {
                 </div>
 
                 {/* Pagination */}
-                <div className="px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[#E8E8E8] bg-white">
-                    <div className="text-xs text-[#8899aa] font-medium">
-                        Showing 1 to {filteredData.length} of {filteredData.length} entries
-                    </div>
 
-                    <div className="flex items-center gap-2">
+
+            </div>
+            <div className="px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[#E8E8E8]">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-9 px-4 text-xs font-semibold border-[#E8E8E8] rounded-lg text-[#1a2332] hover:bg-gray-50 bg-white"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Previous
+                </Button>
+
+                <div className="flex items-center gap-1">
+                    {[1, 2, 3].map((page) => (
                         <Button
-                            variant="outline"
+                            key={page}
+                            variant="ghost"
                             size="sm"
-                            className="h-8 px-3 text-xs border-[#E8E8E8]"
+                            className={cn(
+                                "h-9 w-9 text-xs font-medium transition-colors",
+                                currentPage === page
+                                    ? "text-[#1a2332] bg-gray-100/50 font-bold"
+                                    : "text-[#8899aa] hover:text-[#1a2332] hover:bg-transparent"
+                            )}
+                            onClick={() => setCurrentPage(page)}
                         >
-                            <ArrowLeft className="h-4 w-4 mr-1" />
-                            Previous
+                            {page}
                         </Button>
+                    ))}
 
-                        <Button className="h-8 w-8 text-xs font-semibold bg-[#1a2332] text-white">
-                            1
-                        </Button>
+                    <span className="text-xs text-[#8899aa] px-2 font-medium">...</span>
 
+                    {[8, 9, 10].map((page) => (
                         <Button
-                            variant="outline"
+                            key={page}
+                            variant="ghost"
                             size="sm"
-                            className="h-8 px-3 text-xs border-[#E8E8E8]"
+                            className={cn(
+                                "h-9 w-9 text-xs font-medium transition-colors",
+                                currentPage === page
+                                    ? "text-[#1a2332] bg-gray-100/50 font-bold"
+                                    : "text-[#8899aa] hover:text-[#1a2332] hover:bg-transparent"
+                            )}
+                            onClick={() => setCurrentPage(page)}
                         >
-                            Next
-                            <ArrowRight className="h-4 w-4 ml-1" />
+                            {page}
                         </Button>
-                    </div>
+                    ))}
                 </div>
+
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-9 px-4 text-xs font-semibold border-[#E8E8E8] rounded-lg text-[#1a2332] hover:bg-gray-50 bg-white"
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                >
+                    Next
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
             </div>
         </div>
+
     )
 }

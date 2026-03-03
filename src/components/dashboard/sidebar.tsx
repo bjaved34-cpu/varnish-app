@@ -9,7 +9,7 @@ const menuItems = [
     {
         title: "Dashboard",
         icon: "/DashboardIcon.svg",
-        hasDropdown: true,
+        hasDropdown: false,
     },
     {
         title: "Domains",
@@ -68,13 +68,12 @@ export function Sidebar({ className }: { className?: string }) {
                 </div>
                 {/* Scrollable Main Navigation */}
                 <nav className="space-y-1 flex-1 overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
-                    {menuItems.map((item) => (
-                        <SidebarItem
-                            key={item.title}
-                            {...item}
-                            defaultOpen={item.title === "Domains"}
-                        />
-                    ))}
+                    {menuItems.map((item) => <SidebarItem
+                        key={item.title}
+                        {...item}
+                        defaultOpen={item.title === "Dashboard"}
+                    />
+                    )}
                 </nav>
 
                 {/* Sticky Bottom Menu Items */}

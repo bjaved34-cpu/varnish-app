@@ -32,12 +32,12 @@ export function SidebarItem({
     const toggleDropdown = () => {
         if (hasDropdown) {
             setIsOpen(!isOpen);
+        } else if (title === "Dashboard") {
+            router.push("/dashboard");
         } else if (title === "Billings") {
             router.push("/dashboard/billings");
         } else if (title === "Settings") {
             router.push("/dashboard/settings");
-        } else if (title === "Support") {
-            // We have a dropdown for support now, but this is handled by subItems
         }
     };
 
@@ -48,7 +48,11 @@ export function SidebarItem({
                 onClick={toggleDropdown}
                 className={cn(
                     "flex items-center w-full px-3 py-2.5 text-sm font-medium transition-all group rounded-lg",
-                    (!hasDropdown && ((pathname.startsWith("/dashboard/billings") && title === "Billings") || (pathname.startsWith("/dashboard/settings") && title === "Settings")))
+                    (!hasDropdown && (
+                        (pathname === "/dashboard" && title === "Dashboard") ||
+                        (pathname.startsWith("/dashboard/billings") && title === "Billings") ||
+                        (pathname.startsWith("/dashboard/settings") && title === "Settings")
+                    ))
                         ? "bg-[#1e2d40] text-white"
                         : "hover:bg-[#1e2d40] text-[#ACAEAF] hover:text-white"
                 )}
@@ -76,7 +80,7 @@ export function SidebarItem({
             {hasDropdown && isOpen && subItems && (
                 <div className="relative mt-1 ml-6 pl-4 py-1">
                     {/* Vertical connecting line */}
-                    <div className="absolute left-0 top-0 bottom-4 w-[1px] bg-white" />
+                    <div className="absolute left-[-2px] top-0 bottom-4 w-[1px] bg-white" />
 
                     <div className="space-y-2">
                         {subItems.map((item, index) => (
@@ -87,6 +91,8 @@ export function SidebarItem({
 
                                     if (item === "Add New Domain") {
                                         router.push("/dashboard/add-domain");
+                                    } else if (item === "List of Domains") {
+                                        router.push("/dashboard/domains");
                                     } else if (item === "Add New Hosting") {
                                         router.push("/dashboard/hosting/add-hosting");
                                     } else if (item === "List of Hosting") {
@@ -113,7 +119,7 @@ export function SidebarItem({
                                     "flex items-center transition-all rounded-[7px] text-left text-xs font-medium",
                                     (
                                         (item === "Add New Domain" && pathname === "/dashboard/add-domain") ||
-                                        (item === "List of Domains" && pathname === "/dashboard") ||
+                                        (item === "List of Domains" && pathname === "/dashboard/domains") ||
                                         (item === "List of Hosting" && pathname === "/dashboard/hosting") ||
                                         (item === "Add New Hosting" && pathname === "/dashboard/hosting/add-hosting") ||
                                         (item === "List of SSL" && pathname === "/dashboard/ssl") ||

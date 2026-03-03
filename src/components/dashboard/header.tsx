@@ -27,19 +27,17 @@ export function Header({ title, name, description, buttonLabel, buttonIcon, onBu
 
             {(buttonLabel || buttonIcon) && (
                 <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                    <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs font-semibold text-[#1a2332] shadow-sm">
+                        <RotateCw className="h-4 w-4 text-[#8899aa]" />
+                        <span>12 Oct 2025 - 08 Nov 2025</span>
+                    </div>
+
                     <Button
                         variant="outline"
-                        size="icon"
-                        className="h-9 w-9 md:h-10 md:w-10 rounded-lg border-gray-200 text-gray-500 transition-all hover:bg-gray-50 hover:text-gray-900"
+                        size="sm"
+                        className="h-9 md:h-10 px-3 md:px-4 rounded-lg bg-[#1a2332] text-white font-bold hover:bg-[#243044] border-none shadow-sm transition-all active:scale-[0.98]"
                     >
-                        <RotateCw className="h-4 w-4" />
-                    </Button>
-                    <Button
-                        onClick={onButtonClick}
-                        className="flex h-9 md:h-10 items-center gap-2 rounded-lg bg-[#1a2332] px-3 md:px-4 text-xs md:text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#243044] active:scale-[0.98]"
-                    >
-                        <Plus className="h-4 w-4" />
-                        <span>{buttonLabel}</span>
+                        Download
                     </Button>
                 </div>
             )}

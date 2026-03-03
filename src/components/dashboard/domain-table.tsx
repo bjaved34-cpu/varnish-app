@@ -312,7 +312,7 @@ export function DomainTable({ title, searchPlaceholder = "Search Domains" }: Dom
                 </div>
 
                 {/* Pagination */}
-                <div className="px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[#E8E8E8] bg-white">
+                <div className="px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-[#E8E8E8]">
                     <Button
                         variant="outline"
                         size="sm"
