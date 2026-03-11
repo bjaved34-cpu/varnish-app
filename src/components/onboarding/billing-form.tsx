@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useOnboardingStore } from "@/store/use-onboarding-store";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api";
 
 interface FormState {
     paymentMethod: string;
@@ -57,11 +58,53 @@ export function BillingForm() {
         if (!validate()) return;
         setIsLoading(true);
 
-        // Simulate async transition
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        setIsLoading(false);
+        try {
+            const { accountDetails, selectedServices } = useOnboardingStore.getState();
 
-        router.push("/onboarding/congrats");
+            // 1. Register User
+            const authRes = await api.register({
+                name: accountDetails.name,
+                email: accountDetails.email,
+                password: accountDetails.password,
+            });
+
+            // Save token for subsequent requests
+            if (authRes?.access_token) {
+                localStorage.setItem("token", authRes.access_token);
+            }
+
+            // 2. Create Subscriptions
+            let firstSubId = "";
+            for (const serviceId of selectedServices) {
+                try {
+                    const subRes = await api.createSubscription({ serviceId });
+                    if (!firstSubId && subRes?.id) {
+                        firstSubId = subRes.id;
+                    }
+                } catch (subErr) {
+                    console.error("Failed to subscribe to service:", serviceId, subErr);
+                }
+            }
+
+            // 3. Create Billing Info
+            if (firstSubId) {
+                await api.createBilling({
+                    subscriptionId: firstSubId,
+                    cardName: form.cardHolderName,
+                    cardLast4: form.cardNumber.slice(-4),
+                    expiry: form.expiryDate
+                });
+            } else {
+                console.warn("No subscription created, skipping billing creation");
+            }
+
+            setIsLoading(false);
+            router.push("/onboarding/congrats");
+        } catch (error: any) {
+            console.error("Registration error:", error);
+            alert("Failed to complete registration: " + (error.message || "Unknown error"));
+            setIsLoading(false);
+        }
     }
 
     function handleChange(field: keyof FormState) {

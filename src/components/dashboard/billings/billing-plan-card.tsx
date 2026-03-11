@@ -2,20 +2,37 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 
 export function BillingPlanCard() {
+    const [subs, setSubs] = useState<any[]>([]);
+
+    useEffect(() => {
+        api.getMySubscriptions()
+            .then(data => {
+                if (data && Array.isArray(data)) {
+                    setSubs(data);
+                }
+            })
+            .catch(err => console.error("Failed to fetch subscriptions:", err));
+    }, []);
+
+    const hasSubs = subs.length > 0;
+    const planName = hasSubs ? subs.map(s => s.service?.name || 'Service').join(', ') : "Pro Plan";
+
     return (
         <div className="w-full bg-white rounded-xl border border-[#E8E8E8] p-6">
             <div className="flex flex-col md:flex-row justify-between mb-8">
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                        <h2 className="text-[20px] font-bold text-[#1a2332]">Pro Plan</h2>
+                        <h2 className="text-[20px] font-bold text-[#1a2332]">{planName}</h2>
                         <span className="px-2 py-1 text-xs font-semibold text-[#1a2332] bg-gray-100 rounded-md border border-gray-200">
                             Monthly
                         </span>
                     </div>
                     <p className="text-sm text-[#8899aa]">
-                        Our most popular plan for small teams.
+                        {hasSubs ? "Your active subscriptions." : "Our most popular plan for small teams."}
                     </p>
 
                     <div className="pt-2 space-y-3">

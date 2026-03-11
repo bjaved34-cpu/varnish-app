@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Check, ArrowRight } from "lucide-react";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useOnboardingStore } from "@/store/use-onboarding-store";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { api } from "@/lib/api";
 
 interface Service {
     id: string;
@@ -79,6 +81,23 @@ function ServiceCard({ service, isSelected, onToggle }: ServiceCardProps) {
 export function ServicesSelection() {
     const router = useRouter();
     const { selectedServices, toggleService } = useOnboardingStore();
+    const [services, setServices] = React.useState<Service[]>(SERVICES);
+
+    React.useEffect(() => {
+        api.getServices().then((data: any) => {
+            if (data && Array.isArray(data) && data.length > 0) {
+                setServices(data.map((d: any) => ({
+                    id: String(d.id),
+                    title: d.name || "Service",
+                    subtitle: d.description || "Description",
+                    description: d.description || "",
+                    price: d.price ? `$ ${d.price} / Per Month` : "Custom pricing"
+                })));
+            }
+        }).catch((err: any) => {
+            console.warn("Failed to fetch services (might need ADMIN auth). Using mocks.", err);
+        });
+    }, []);
 
     return (
         <motion.div
