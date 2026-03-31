@@ -3,20 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+
 
 export function BillingPlanCard() {
     const [subs, setSubs] = useState<any[]>([]);
 
-    useEffect(() => {
-        api.getMySubscriptions()
-            .then(data => {
-                if (data && Array.isArray(data)) {
-                    setSubs(data);
-                }
-            })
-            .catch(err => console.error("Failed to fetch subscriptions:", err));
-    }, []);
+
 
     const hasSubs = subs.length > 0;
     const planName = hasSubs ? subs.map(s => s.service?.name || 'Service').join(', ') : "Pro Plan";

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useOnboardingStore } from "@/store/use-onboarding-store";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { api } from "@/lib/api";
+
 
 interface FormState {
     paymentMethod: string;
@@ -30,7 +30,7 @@ interface FormErrors {
 
 export function BillingForm() {
     const router = useRouter();
-    const { reset } = useOnboardingStore();
+    const { reset, jwtToken } = useOnboardingStore();
     const [form, setForm] = useState<FormState>({
         paymentMethod: "",
         cardHolderName: "",
@@ -56,53 +56,42 @@ export function BillingForm() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!validate()) return;
+        
+        if (!jwtToken) {
+            setErrors({ paymentMethod: "Missing authentication token" });
+            return;
+        }
+        
         setIsLoading(true);
 
         try {
-            const { accountDetails, selectedServices } = useOnboardingStore.getState();
+            const storageToken = typeof window !== "undefined" ? (sessionStorage.getItem("onboarding_jwt") || localStorage.getItem("onboarding_jwt")) : null;
+            const activeToken = jwtToken || storageToken;
 
-            // 1. Register User
-            const authRes = await api.register({
-                name: accountDetails.name,
-                email: accountDetails.email,
-                password: accountDetails.password,
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+            const response = await fetch(`${apiUrl}/onboarding/payment`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${activeToken}`,
+                },
+                body: JSON.stringify({
+                    paymentMethod: form.paymentMethod,
+                }),
             });
 
-            // Save token for subsequent requests
-            if (authRes?.access_token) {
-                localStorage.setItem("token", authRes.access_token);
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data?.message || `Payment failed (${response.status})`);
             }
 
-            // 2. Create Subscriptions
-            let firstSubId = "";
-            for (const serviceId of selectedServices) {
-                try {
-                    const subRes = await api.createSubscription({ serviceId });
-                    if (!firstSubId && subRes?.id) {
-                        firstSubId = subRes.id;
-                    }
-                } catch (subErr) {
-                    console.error("Failed to subscribe to service:", serviceId, subErr);
-                }
-            }
-
-            // 3. Create Billing Info
-            if (firstSubId) {
-                await api.createBilling({
-                    subscriptionId: firstSubId,
-                    cardName: form.cardHolderName,
-                    cardLast4: form.cardNumber.slice(-4),
-                    expiry: form.expiryDate
-                });
-            } else {
-                console.warn("No subscription created, skipping billing creation");
-            }
-
-            setIsLoading(false);
+            // On success, reset onboarding state and navigate to congrats
+            //reset();
             router.push("/onboarding/congrats");
-        } catch (error: any) {
-            console.error("Registration error:", error);
-            alert("Failed to complete registration: " + (error.message || "Unknown error"));
+        } catch (error) {
+            console.error("Payment submit failed:", error);
+            setErrors({ paymentMethod: error instanceof Error ? error.message : "Failed to process payment" });
+        } finally {
             setIsLoading(false);
         }
     }

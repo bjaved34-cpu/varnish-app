@@ -20,7 +20,7 @@ interface FormErrors {
 
 export function DomainForm() {
     const router = useRouter();
-    const { domain, setDomain } = useOnboardingStore();
+    const { domain, setDomain, jwtToken } = useOnboardingStore();
     const [form, setForm] = useState<FormState>({ domain });
     const [errors, setErrors] = useState<FormErrors>({});
     const [isLoading, setIsLoading] = useState(false);
@@ -41,14 +41,50 @@ export function DomainForm() {
         if (!validate()) return;
         setIsLoading(true);
 
-        // Save to store
-        setDomain(form.domain);
+        const storageToken = typeof window !== "undefined" ? (sessionStorage.getItem("onboarding_jwt") || localStorage.getItem("onboarding_jwt")) : null;
+        const activeToken = jwtToken || storageToken;
+        console.log("Domain request token:", activeToken);
 
-        // Simulate async transition
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        setIsLoading(false);
-        // Navigate to next step (Services)
-        router.push("/onboarding/services");
+        if (!activeToken) {
+            setErrors({ domain: "Missing auth token. Please complete account step first." });
+            setIsLoading(false);
+            return;
+        }
+
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+            const response = await fetch(`${apiUrl}/onboarding/domain`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${activeToken}`,
+                },
+                body: JSON.stringify({
+                    domainName: form.domain,
+                    onboardingStep: 1,
+                }),
+            });
+
+            let data: any = null;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                console.warn("domainForm: empty or non-JSON response", parseError);
+            }
+
+            if (!response.ok) {
+                const serverMessage = data?.message || data?.error || response.statusText || "Failed to save domain";
+                throw new Error(`HTTP ${response.status}: ${serverMessage}`);
+            }
+
+            setDomain(form.domain);
+            router.push("/onboarding/services");
+        } catch (error) {
+            console.error("Domain submit failed:", error);
+            setErrors({ domain: error instanceof Error ? error.message : "An error occurred" });
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

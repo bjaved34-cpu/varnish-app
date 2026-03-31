@@ -27,7 +27,7 @@ function validateEmail(email: string): boolean {
 
 export function AccountDetailsForm() {
   const router = useRouter();
-  const { accountDetails, setAccountDetails } = useOnboardingStore();
+  const { accountDetails, setAccountDetails, setJwtToken } = useOnboardingStore();
   const [form, setForm] = useState<FormState>(accountDetails);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -62,14 +62,52 @@ export function AccountDetailsForm() {
     if (!validate()) return;
     setIsLoading(true);
 
-    // Save to store
-    setAccountDetails(form);
+    try {
+      const res = await fetch("http://localhost:3000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          role: "USER",
+          onboardingStep: 0,
+          emailVerified: false,
+        }),
+      });
 
-    // Simulate async transition
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setIsLoading(false);
-    router.push("/onboarding/domain");
+      const data = await res.json();
+      console.log(data);
+
+      if (!res.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+
+      // Save details in state to satisfy onboarding guard
+      setAccountDetails(form);
+
+      // Optional: save JWT passed on next steps
+      const token = data.token || data.access_token || data?.data?.token || data?.data?.access_token;
+      if (token) {
+        setJwtToken?.(token);
+        localStorage.setItem("onboarding_jwt", token);
+        sessionStorage.setItem("onboarding_jwt", token);
+        console.log("Auth token saved", token);
+      } else {
+        console.warn("No token returned from auth/register response", data);
+      }
+
+      router.push("/onboarding/domain");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setErrors({ email: error instanceof Error ? error.message : "An error occurred" });
+    } finally {
+      setIsLoading(false);
+    }
   }
+
 
   function handleChange(field: keyof FormState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {

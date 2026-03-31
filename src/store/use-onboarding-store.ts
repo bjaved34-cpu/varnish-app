@@ -10,9 +10,11 @@ interface OnboardingState {
     accountDetails: AccountDetails;
     domain: string;
     selectedServices: string[];
+    jwtToken: string | null;
     setAccountDetails: (details: AccountDetails) => void;
     setDomain: (domain: string) => void;
     toggleService: (serviceId: string) => void;
+    setJwtToken: (token: string | null) => void;
     reset: () => void;
 }
 
@@ -24,6 +26,7 @@ const initialState = {
     },
     domain: "",
     selectedServices: [],
+    jwtToken: null,
 };
 
 export const useOnboardingStore = create<OnboardingState>((set) => ({
@@ -36,5 +39,6 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
                 ? state.selectedServices.filter((id) => id !== serviceId)
                 : [...state.selectedServices, serviceId],
         })),
+    setJwtToken: (token) => set({ jwtToken: token }),
     reset: () => set(initialState),
 }));

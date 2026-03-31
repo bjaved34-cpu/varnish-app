@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { useOnboardingStore } from "@/store/use-onboarding-store";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { api } from "@/lib/api";
 
 interface Service {
     id: string;
@@ -17,14 +16,6 @@ interface Service {
     description: string;
     price: string;
 }
-
-const SERVICES: Service[] = Array(6).fill({
-    id: "hosting-resell",
-    title: "Hosting Resell",
-    subtitle: "Schedule sales meetings",
-    description: "Lorem Ipsum is simply dummy text of the printing and typese.",
-    price: "$ 50 / Per Month",
-}).map((s, i) => ({ ...s, id: `${s.id}-${i}` }));
 
 interface ServiceCardProps {
     service: Service;
@@ -80,24 +71,122 @@ function ServiceCard({ service, isSelected, onToggle }: ServiceCardProps) {
 
 export function ServicesSelection() {
     const router = useRouter();
-    const { selectedServices, toggleService } = useOnboardingStore();
-    const [services, setServices] = React.useState<Service[]>(SERVICES);
+    const { selectedServices, toggleService, jwtToken } = useOnboardingStore();
+    const [services, setServices] = React.useState<Service[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [error, setError] = React.useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
 
     React.useEffect(() => {
-        api.getServices().then((data: any) => {
-            if (data && Array.isArray(data) && data.length > 0) {
-                setServices(data.map((d: any) => ({
-                    id: String(d.id),
-                    title: d.name || "Service",
-                    subtitle: d.description || "Description",
-                    description: d.description || "",
-                    price: d.price ? `$ ${d.price} / Per Month` : "Custom pricing"
-                })));
+        const fetchServices = async () => {
+            if (!jwtToken) {
+                setError("No authentication token found");
+                setIsLoading(false);
+                return;
             }
-        }).catch((err: any) => {
-            console.warn("Failed to fetch services (might need ADMIN auth). Using mocks.", err);
-        });
-    }, []);
+
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const response = await fetch(`${apiUrl}/services`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch services');
+                }
+
+                const data = await response.json();
+                setServices(data.services || data); // Adjust based on your API response structure
+            } catch (err) {
+                console.error('Error fetching services:', err);
+                setError(err instanceof Error ? err.message : 'Failed to load services');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchServices();
+    }, [jwtToken]);
+
+    const handleSubmitServices = async () => {
+        if (!jwtToken || selectedServices.length === 0) return;
+        setIsSubmitting(true);
+
+        try {
+            const storageToken = typeof window !== "undefined" ? (sessionStorage.getItem("onboarding_jwt") || localStorage.getItem("onboarding_jwt")) : null;
+            const activeToken = jwtToken || storageToken;
+
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+            const response = await fetch(`${apiUrl}/onboarding/services`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${activeToken}`,
+                },
+                body: JSON.stringify({
+                    serviceIds: selectedServices,
+                }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data?.message || `Failed to save services (${response.status})`);
+            }
+
+            router.push("/onboarding/billing");
+        } catch (err) {
+            console.error("Services submit failed:", err);
+            setError(err instanceof Error ? err.message : "Failed to save services");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+
+
+    if (isLoading) {
+        return (
+            <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="w-full max-w-[850px]"
+            >
+                <div className="mb-10 text-center">
+                    <h1 className="text-[32px] font-bold tracking-tight text-gray-900">
+                        Services
+                    </h1>
+                </div>
+                <div className="flex justify-center items-center h-64">
+                    <div className="text-gray-500">Loading services...</div>
+                </div>
+            </motion.div>
+        );
+    }
+
+    if (error) {
+        return (
+            <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="w-full max-w-[850px]"
+            >
+                <div className="mb-10 text-center">
+                    <h1 className="text-[32px] font-bold tracking-tight text-gray-900">
+                        Services
+                    </h1>
+                </div>
+                <div className="flex justify-center items-center h-64">
+                    <div className="text-red-500">Error: {error}</div>
+                </div>
+            </motion.div>
+        );
+    }
 
     return (
         <motion.div
@@ -113,7 +202,7 @@ export function ServicesSelection() {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
-                {SERVICES.map((service) => (
+                {services.map((service) => (
                     <ServiceCard
                         key={service.id}
                         service={service}
@@ -133,11 +222,18 @@ export function ServicesSelection() {
                     Back
                 </Button>
                 <Button
-                    onClick={() => router.push("/onboarding/billing")}
-                    disabled={selectedServices.length === 0}
+                    onClick={handleSubmitServices}
+                    disabled={selectedServices.length === 0 || isSubmitting}
                     className="h-11 rounded-lg bg-[#1a2332] px-10 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#243044] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Next
+                    {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                            Saving...
+                        </span>
+                    ) : (
+                        "Next"
+                    )}
                 </Button>
             </div>
         </motion.div>
