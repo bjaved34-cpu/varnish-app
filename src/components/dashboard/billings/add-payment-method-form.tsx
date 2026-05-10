@@ -4,20 +4,78 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
+import { useRouter } from "next/navigation"
 
 export function AddPaymentMethodForm() {
-    const [name, setName] = useState("Nick Jonas")
-    const [cardNumber, setCardNumber] = useState("1234 1234 1234 1234")
-    const [expiry, setExpiry] = useState("06 / 2026")
-    const [cvc, setCvc] = useState("***")
+    const router = useRouter()
+
+    const [name, setName] = useState("")
+    const [cardNumber, setCardNumber] = useState("")
+    const [expiry, setExpiry] = useState("")
+    const [cvc, setCvc] = useState("")
     const [saveAsDefault, setSaveAsDefault] = useState(true)
+
+    const [loading, setLoading] = useState(false)
+
+    const getToken = () => {
+        return (
+            sessionStorage.getItem("onboarding_jwt") ||
+            localStorage.getItem("onboarding_jwt")
+        )
+    }
+
+    const handleSave = async () => {
+        if (!cardNumber || !expiry || !name) {
+            alert("Please fill all fields")
+            return
+        }
+
+        setLoading(true)
+
+        try {
+            const token = getToken()
+
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/billing/payment-method`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        name,
+                        cardNumber,
+                        expiry,
+                        cvc,
+                        saveAsDefault,
+                    }),
+                }
+            )
+
+            const data = await res.json()
+
+            if (!res.ok) {
+                throw new Error(data.message || "Something went wrong")
+            }
+
+            // ✅ redirect back to billing page
+            router.push("/dashboard/billings")
+
+        } catch (err: any) {
+            console.error(err)
+            alert(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 w-full">
 
             <div className="space-y-6">
 
-                {/* Card Details Section */}
+                {/* Card Details */}
                 <div className="flex flex-col md:flex-row md:items-start md:gap-12 pb-6 border-b">
                     <div className="md:w-40 md:pt-2">
                         <h3 className="text-sm font-semibold text-gray-700">Card Details</h3>
@@ -33,9 +91,9 @@ export function AddPaymentMethodForm() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="Enter name"
-                                    className="h-11"
                                 />
                             </div>
+
                             <div className="w-1/3 space-y-2">
                                 <label className="text-sm font-medium text-gray-700">
                                     Expiry
@@ -44,7 +102,6 @@ export function AddPaymentMethodForm() {
                                     value={expiry}
                                     onChange={(e) => setExpiry(e.target.value)}
                                     placeholder="MM / YYYY"
-                                    className="h-11"
                                 />
                             </div>
                         </div>
@@ -58,9 +115,9 @@ export function AddPaymentMethodForm() {
                                     value={cardNumber}
                                     onChange={(e) => setCardNumber(e.target.value)}
                                     placeholder="1234 1234 1234 1234"
-                                    className="h-11"
                                 />
                             </div>
+
                             <div className="w-1/3 space-y-2">
                                 <label className="text-sm font-medium text-gray-700">
                                     CVC
@@ -70,16 +127,15 @@ export function AddPaymentMethodForm() {
                                     value={cvc}
                                     onChange={(e) => setCvc(e.target.value)}
                                     placeholder="***"
-                                    className="h-11"
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Save as default */}
+                {/* Default toggle */}
                 <div className="flex flex-col md:flex-row md:items-center md:gap-12 pb-6 border-b">
-                    <label className="md:w-40 text-sm font-semibold text-gray-700 mb-2 md:mb-0">
+                    <label className="md:w-40 text-sm font-semibold text-gray-700">
                         Save as default
                     </label>
 
@@ -91,13 +147,13 @@ export function AddPaymentMethodForm() {
             </div>
 
             {/* Buttons */}
-            <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
-                <Button variant="outline" className="w-full sm:w-auto px-6">
+            <div className="mt-8 flex justify-end gap-4">
+                <Button variant="outline" onClick={() => router.back()}>
                     Cancel
                 </Button>
 
-                <Button className="w-full sm:w-auto px-6 bg-[#0C1E35] hover:bg-[#0a1729]">
-                    Save card
+                <Button onClick={handleSave} disabled={loading}>
+                    {loading ? "Saving..." : "Save card"}
                 </Button>
             </div>
         </div>

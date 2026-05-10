@@ -14,20 +14,36 @@ const data7D = [
     { name: "Sun", value: 48 }, { name: "Sun", value: 45 }, { name: "Sun", value: 42 }, { name: "Sun", value: 38 },
 ];
 
-const data1H = Array.from({ length: 12 }, (_, i) => ({
-    name: `${i * 5}m`,
-    value: 50 + Math.random() * 20
-}));
+const data1H = [
+    { name: "0m", value: 58 }, { name: "5m", value: 62 }, { name: "10m", value: 64 },
+    { name: "15m", value: 61 }, { name: "20m", value: 66 }, { name: "25m", value: 63 },
+    { name: "30m", value: 67 }, { name: "35m", value: 65 }, { name: "40m", value: 68 },
+    { name: "45m", value: 64 }, { name: "50m", value: 66 }, { name: "55m", value: 63 },
+];
 
-const data1D = Array.from({ length: 24 }, (_, i) => ({
-    name: `${i}:00`,
-    value: 40 + Math.random() * 30
-}));
+const data1D = [
+    { name: "0:00", value: 45 }, { name: "1:00", value: 48 }, { name: "2:00", value: 52 },
+    { name: "3:00", value: 54 }, { name: "4:00", value: 50 }, { name: "5:00", value: 53 },
+    { name: "6:00", value: 57 }, { name: "7:00", value: 60 }, { name: "8:00", value: 62 },
+    { name: "9:00", value: 59 }, { name: "10:00", value: 61 }, { name: "11:00", value: 63 },
+    { name: "12:00", value: 60 }, { name: "13:00", value: 58 }, { name: "14:00", value: 56 },
+    { name: "15:00", value: 55 }, { name: "16:00", value: 57 }, { name: "17:00", value: 59 },
+    { name: "18:00", value: 61 }, { name: "19:00", value: 60 }, { name: "20:00", value: 58 },
+    { name: "21:00", value: 56 }, { name: "22:00", value: 54 }, { name: "23:00", value: 52 },
+];
 
-const data1M = Array.from({ length: 30 }, (_, i) => ({
-    name: `D${i + 1}`,
-    value: 30 + Math.random() * 40
-}));
+const data1M = [
+    { name: "D1", value: 45 }, { name: "D2", value: 48 }, { name: "D3", value: 52 },
+    { name: "D4", value: 55 }, { name: "D5", value: 53 }, { name: "D6", value: 56 },
+    { name: "D7", value: 58 }, { name: "D8", value: 60 }, { name: "D9", value: 62 },
+    { name: "D10", value: 61 }, { name: "D11", value: 59 }, { name: "D12", value: 58 },
+    { name: "D13", value: 57 }, { name: "D14", value: 56 }, { name: "D15", value: 57 },
+    { name: "D16", value: 59 }, { name: "D17", value: 60 }, { name: "D18", value: 62 },
+    { name: "D19", value: 63 }, { name: "D20", value: 61 }, { name: "D21", value: 60 },
+    { name: "D22", value: 58 }, { name: "D23", value: 57 }, { name: "D24", value: 56 },
+    { name: "D25", value: 55 }, { name: "D26", value: 56 }, { name: "D27", value: 57 },
+    { name: "D28", value: 58 }, { name: "D29", value: 60 }, { name: "D30", value: 61 },
+];
 
 export function PerformanceChart() {
     const [period, setPeriod] = React.useState<"1H" | "1D" | "7D" | "1M">("7D");

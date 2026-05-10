@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [formError, setFormError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   function validate() {
@@ -35,14 +36,54 @@ export default function LoginPage() {
     return Object.keys(next).length === 0;
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!validate()) return;
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setIsLoading(false);
-    router.push("/dashboard");
+    setFormError(null);
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+      const response = await fetch(`${apiUrl}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || "Login failed. Please check your credentials.");
+      }
+
+      const token = data.token || data.access_token || data?.data?.token || data?.data?.access_token;
+      const userId = data.id || data.user?.id || data?.data?.id;
+      const userEmail = data.email || data.user?.email || data?.data?.email;
+      const userRole = data.role || data.user?.role || data?.data?.role;
+
+      if (!token) {
+        throw new Error("Authentication token was not returned by the login endpoint.");
+      }
+
+      localStorage.setItem("onboarding_jwt", token);
+      sessionStorage.setItem("onboarding_jwt", token);
+      localStorage.setItem(
+        "onboarding_user",
+        JSON.stringify({ id: userId ?? null, email: userEmail ?? null, role: userRole ?? null })
+      );
+
+      router.push("/dashboard");
+    } catch (error) {
+      if (error instanceof Error) {
+        setFormError(error.message);
+      } else {
+        setFormError("An unexpected error occurred during login.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -117,6 +158,12 @@ export default function LoginPage() {
                 </p>
               )}
             </div>
+
+            {formError && (
+              <p className="text-sm text-[#dc2626]" role="alert">
+                {formError}
+              </p>
+            )}
 
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-[#f1f5f9] bg-[#f8fafc] px-4 py-3 text-sm text-[#475569]">
               <label className="flex items-center gap-3">

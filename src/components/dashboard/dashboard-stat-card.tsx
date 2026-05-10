@@ -1,9 +1,26 @@
-"use client";
-
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useOnboardingStore } from "@/store/use-onboarding-store";
-import { useRouter} from "next/navigation";
+
+// --- Interfaces ---
+export interface DomainServiceItem {
+  id: string;
+  domainId: string;
+  serviceId: string;
+  status: string;
+  startDate: string | null;
+  endDate: string | null;
+}
+
+export interface DomainData {
+  createdAt: string;
+  id: string;
+  name: string;
+  sslEnabled: boolean;
+  updatedAt: string;
+  userId: string;
+  verificationStatus: string;
+  DomainService: DomainServiceItem[];
+}
 
 interface DashboardStatCardProps {
     title: string;
@@ -13,35 +30,15 @@ interface DashboardStatCardProps {
     className?: string;
 }
 
-const storageToken = (sessionStorage.getItem("onboarding_jwt") || localStorage.getItem("onboarding_jwt"));
-console.log("DashboardStatCard token:", storageToken);
+// --- Logic Helpers ---
 
-async function fetchDashboardStats() {
-    const router = useRouter();
-    const token = storageToken;
-    if (!token) {
-        console.warn("No auth token found for fetching dashboard stats");
-        router.push("/onboarding/services");
-    }
-    try{
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-        const responseDomain = await fetch(`${apiUrl}/domain/domains`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}`},
-        });
-        
-        if (!responseDomain.ok) {
-            throw new Error("Failed to fetch dashboard stats");
-        }
-        console.log(responseDomain.json())
-    }catch(error){ 
-        console.error("Failed to fetch dashboard stats:", error);
-    }
-}
+// 1. Fixed: Helper to get token safely without crashing SSR
+
 
 export function DashboardStatCard({ title, value, trend, trendType, className }: DashboardStatCardProps) {
+
     const isUp = trendType === "up";
-    const data = fetchDashboardStats();
+
     return (
         <div className={cn(
             "flex-1 min-w-[200px] bg-white border border-[#E8E8E8] rounded-xl p-5 flex flex-col gap-3 shadow-sm",

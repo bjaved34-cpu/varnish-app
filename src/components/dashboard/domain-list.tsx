@@ -2,9 +2,7 @@
 
 import * as React from "react";
 import {
-    ChevronDown,
     ChevronsUpDown,
-    MoreHorizontal,
     Search,
     ArrowLeft,
     ArrowRight,
@@ -23,7 +21,25 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const domains = [
+interface DomainItem {
+    id: string | number;
+    name: string;
+    cdn: string;
+    bandwidth: string;
+    cache: string;
+    expiry: string;
+    ssl: string;
+    status: string;
+}
+
+interface DomainListProps {
+    domainsData?: DomainItem[];
+    page?: number;
+    totalPages?: number;
+    setPage?: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const defaultDomains: DomainItem[] = [
     { id: 1, name: "Name", cdn: "218k", bandwidth: "12 GB", cache: "94%", expiry: "23/09/25", ssl: "Valid", status: "Approved" },
     { id: 2, name: "Name", cdn: "218k", bandwidth: "12 GB", cache: "94%", expiry: "23/09/25", ssl: "Valid", status: "Approved" },
     { id: 3, name: "Name", cdn: "218k", bandwidth: "12 GB", cache: "94%", expiry: "23/09/25", ssl: "Valid", status: "Approved" },
@@ -32,32 +48,46 @@ const domains = [
     { id: 6, name: "Name", cdn: "218k", bandwidth: "12 GB", cache: "94%", expiry: "23/09/25", ssl: "Valid", status: "Approved" },
 ];
 
-export function DomainList() {
+export function DomainList({ domainsData = [], page = 1, totalPages = 1, setPage }: DomainListProps) {
     const [searchQuery, setSearchQuery] = React.useState("");
-    const [selectedDomains, setSelectedDomains] = React.useState<number[]>([]);
+    const [selectedDomains, setSelectedDomains] = React.useState<(string | number)[]>([]);
 
-    const filteredDomains = domains.filter(domain =>
+    const rows = domainsData.length > 0 ? domainsData : defaultDomains;
+
+    const filteredDomains = rows.filter((domain) =>
         domain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        domain.status.toLowerCase().includes(searchQuery.toLowerCase())
+        domain.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        domain.ssl.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const toggleAll = () => {
         if (selectedDomains.length === filteredDomains.length && filteredDomains.length > 0) {
             setSelectedDomains([]);
         } else {
-            setSelectedDomains(filteredDomains.map(d => d.id));
+            setSelectedDomains(filteredDomains.map((d) => d.id));
         }
     };
 
-    const toggleRow = (id: number) => {
-        setSelectedDomains(prev =>
-            prev.includes(id)
-                ? prev.filter(item => item !== id)
-                : [...prev, id]
+    const toggleRow = (id: string | number) => {
+        setSelectedDomains((prev) =>
+            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
         );
     };
 
     const isAllSelected = filteredDomains.length > 0 && selectedDomains.length === filteredDomains.length;
+
+    const pageNumbers = React.useMemo(() => {
+        if (totalPages <= 7) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        }
+        if (page <= 3) {
+            return [1, 2, 3, "...", totalPages - 2, totalPages - 1, totalPages];
+        }
+        if (page >= totalPages - 2) {
+            return [1, 2, 3, "...", totalPages - 2, totalPages - 1, totalPages];
+        }
+        return [1, "...", page - 1, page, page + 1, "...", totalPages];
+    }, [page, totalPages]);
 
     return (
         <div className="w-full bg-[#F6F6F6] rounded-[10px] p-[10px] md:h-auto flex flex-col border border-[#D8D8D8]">
@@ -194,16 +224,42 @@ export function DomainList() {
                 {/* Pagination */}
                 <div className="mt-auto px-4 py-4 flex items-center justify-between border-t border-[#E8E8E8] bg-[#fcfcfc]">
                     <div className="text-xs text-[#8899aa] font-medium">
-                        Showing 1 to {filteredDomains.length} of {filteredDomains.length} entries
+                        Showing 1 to {filteredDomains.length} of {rows.length} entries
                     </div>
                     <div className="flex items-center gap-1">
-                        <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg border-[#E8E8E8] text-[#8899aa]">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 rounded-lg border-[#E8E8E8] text-[#8899aa]"
+                            onClick={() => setPage?.((prev) => Math.max(1, prev - 1))}
+                            disabled={!setPage || page === 1}
+                        >
                             <ArrowLeft className="h-4 w-4" />
                         </Button>
-                        <Button className="h-8 w-8 rounded-lg bg-[#1a2332] text-white text-xs font-bold">
-                            1
-                        </Button>
-                        <Button variant="outline" size="icon" className="h-8 w-8 rounded-lg border-[#E8E8E8] text-[#8899aa]">
+                        {pageNumbers.map((pageNumber, index) =>
+                            pageNumber === "..." ? (
+                                <span key={index} className="px-2 text-xs text-[#8899aa]">
+                                    ...
+                                </span>
+                            ) : (
+                                <Button
+                                    key={index}
+                                    size="sm"
+                                    className={pageNumber === page ? "h-8 w-8 rounded-lg bg-[#1a2332] text-white text-xs font-bold" : "h-8 w-8 rounded-lg border-[#E8E8E8] text-[#8899aa] text-xs"}
+                                    onClick={() => setPage?.(pageNumber as number)}
+                                    disabled={!setPage}
+                                >
+                                    {pageNumber}
+                                </Button>
+                            )
+                        )}
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 rounded-lg border-[#E8E8E8] text-[#8899aa]"
+                            onClick={() => setPage?.((prev) => Math.min(totalPages, prev + 1))}
+                            disabled={!setPage || page === totalPages}
+                        >
                             <ArrowRight className="h-4 w-4" />
                         </Button>
                     </div>

@@ -1,7 +1,120 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+const getSafeToken = () => {
+    if (typeof window === "undefined")
+        return null;
+
+    return (
+        sessionStorage.getItem(
+            "onboarding_jwt"
+        ) ||
+        localStorage.getItem(
+            "onboarding_jwt"
+        )
+    );
+};
 
 export function NotificationsTab() {
+    const [settings, setSettings] =
+        useState({
+            marketingEmails: false,
+            billingEmails: false,
+            supportEmails: false,
+            securityEmails: false,
+        });
+    useEffect(() => {
+        const fetchNotifications =
+            async () => {
+                try {
+                    const token =
+                        getSafeToken();
+
+                    const apiUrl =
+                        process.env
+                            .NEXT_PUBLIC_API_URL ||
+                        "http://localhost:3000";
+
+                    const res =
+                        await fetch(
+                            `${apiUrl}/setting/notifications`,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+
+                    const data =
+                        await res.json();
+
+                    setSettings({
+                        marketingEmails:
+                            data.marketingEmails,
+                        billingEmails:
+                            data.billingEmails,
+                        supportEmails:
+                            data.supportEmails,
+                        securityEmails:
+                            data.securityEmails,
+                    });
+                } catch {
+                    toast.error(
+                        "Failed to load notifications"
+                    );
+                }
+            };
+
+        fetchNotifications();
+    }, []);
+    const handleSaveNotifications =
+        async () => {
+            try {
+                const token =
+                    getSafeToken();
+
+                const apiUrl =
+                    process.env
+                        .NEXT_PUBLIC_API_URL ||
+                    "http://localhost:3000";
+
+                const res =
+                    await fetch(
+                        `${apiUrl}/setting/notifications`,
+                        {
+                            method:
+                                "PATCH",
+
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type":
+                                    "application/json",
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    settings
+                                ),
+                        }
+                    );
+
+                if (!res.ok) {
+                    throw new Error();
+                }
+
+                toast.success(
+                    "Notification settings updated"
+                );
+            } catch {
+                toast.error(
+                    "Failed to update notifications"
+                );
+            }
+        };
+
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
@@ -18,7 +131,19 @@ export function NotificationsTab() {
                     </div>
                     <div className="md:col-span-2">
                         <div className="flex items-start space-x-3">
-                            <Checkbox id="product-updates" defaultChecked className="mt-1" />
+                            <Checkbox id="product-updates" defaultChecked className="mt-1"
+                                checked={
+                                    settings.marketingEmails
+                                }
+                                onCheckedChange={(
+                                    checked
+                                ) =>
+                                    setSettings({
+                                        ...settings,
+                                        marketingEmails:
+                                            !!checked,
+                                    })
+                                } />
                             <div className="grid gap-1.5 leading-none">
                                 <label
                                     htmlFor="product-updates"
@@ -41,7 +166,19 @@ export function NotificationsTab() {
                     <div className="md:col-span-2 space-y-6">
                         <div className="flex items-start space-x-3">
                             {/* Stylized as a circle to match the design's radio-like multi-select, assuming they are actually checkbox groups */}
-                            <Checkbox id="billing-reminders" className="mt-1 rounded-full data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900" />
+                            <Checkbox id="billing-reminders" className="mt-1 rounded-full data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
+                                checked={
+                                    settings.billingEmails
+                                }
+                                onCheckedChange={(
+                                    checked
+                                ) =>
+                                    setSettings({
+                                        ...settings,
+                                        billingEmails:
+                                            !!checked,
+                                    })
+                                } />
                             <div className="grid gap-1.5 leading-none">
                                 <label
                                     htmlFor="billing-reminders"
@@ -54,7 +191,19 @@ export function NotificationsTab() {
                         </div>
 
                         <div className="flex items-start space-x-3">
-                            <Checkbox id="service-alerts" defaultChecked className="mt-1 rounded-full data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900" />
+                            <Checkbox id="service-alerts" defaultChecked className="mt-1 rounded-full data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
+                                checked={
+                                    settings.supportEmails
+                                }
+                                onCheckedChange={(
+                                    checked
+                                ) =>
+                                    setSettings({
+                                        ...settings,
+                                        supportEmails:
+                                            !!checked,
+                                    })
+                                } />
                             <div className="grid gap-1.5 leading-none">
                                 <label
                                     htmlFor="service-alerts"
@@ -67,7 +216,19 @@ export function NotificationsTab() {
                         </div>
 
                         <div className="flex items-start space-x-3">
-                            <Checkbox id="security-alerts" defaultChecked className="mt-1 rounded-full data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900" />
+                            <Checkbox id="security-alerts" defaultChecked className="mt-1 rounded-full data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
+                                checked={
+                                    settings.securityEmails
+                                }
+                                onCheckedChange={(
+                                    checked
+                                ) =>
+                                    setSettings({
+                                        ...settings,
+                                        securityEmails:
+                                            !!checked,
+                                    })
+                                } />
                             <div className="grid gap-1.5 leading-none">
                                 <label
                                     htmlFor="security-alerts"
@@ -86,7 +247,9 @@ export function NotificationsTab() {
                     <Button variant="outline" className="h-10 px-6 font-medium text-slate-700 border-slate-200 hover:bg-slate-50">
                         Cancel
                     </Button>
-                    <Button className="h-10 px-6 font-medium bg-[#101828] text-white hover:bg-[#101828]/90">
+                    <Button className="h-10 px-6 font-medium bg-[#101828] text-white hover:bg-[#101828]/90" onClick={
+                        handleSaveNotifications
+                    }>
                         Save
                     </Button>
                 </div>
