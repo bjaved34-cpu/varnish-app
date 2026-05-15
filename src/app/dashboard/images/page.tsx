@@ -96,7 +96,6 @@ export default function ImagesPage() {
                 {/* ✅ CORRECT TABLE */}
                 <ImagesTable
                     title="List of Image Rules"
-                    searchPlaceholder="Search rules"
                     page={page}
                     totalPages={totalPages}
                     setPage={setPage}
