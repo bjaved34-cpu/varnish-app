@@ -137,11 +137,45 @@ export default function DashboardPage() {
 
                 {/* Middle Row Summary Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                    <SummaryCard title="domain" value={data?.activeDomains.toString() || "0"} />
-                    <SummaryCard title="Hosting" value={data?.hostingCount.toString() || "0"} />
-                    <SummaryCard title="Varnish" value="92% hit" />
-                    <SummaryCard title="SSL" value="expiring soon" />
-                    <SummaryCard title="Images" value="18% saved" />
+                    <SummaryCard
+        title="domain"
+        value={data?.activeDomains.toString() || "0"}
+        type="DOMAIN"
+        createdAt={new Date().toISOString()}
+        endDate={new Date().toISOString()}
+    />
+
+    <SummaryCard
+        title="Hosting"
+        value={data?.hostingCount.toString() || "0"}
+        type="SERVICE"
+        createdAt={new Date().toISOString()}
+        endDate={new Date().toISOString()}
+    />
+
+    <SummaryCard
+        title="Varnish"
+        value="92% hit"
+        type="SERVICE"
+        createdAt={new Date().toISOString()}
+        endDate={new Date().toISOString()}
+    />
+
+    <SummaryCard
+        title="SSL"
+        value="expiring soon"
+        type="SERVICE"
+        createdAt={new Date().toISOString()}
+        endDate={new Date().toISOString()}
+    />
+
+    <SummaryCard
+        title="Images"
+        value="18% saved"
+        type="SERVICE"
+        createdAt={new Date().toISOString()}
+        endDate={new Date().toISOString()}
+    />
                 </div>
 
                 {/* Charts Section */}

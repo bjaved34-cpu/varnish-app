@@ -52,7 +52,7 @@ export default function Ssl() {
     useEffect(() => {
         if (!isAuthorized) return;
         const loadSslData = async () => {
-            const result = await getSslData();
+            const result = await getSslData(page);
             setSslData(result);
             setIsLoading(false);
         };

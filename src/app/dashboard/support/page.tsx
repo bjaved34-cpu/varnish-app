@@ -62,9 +62,26 @@ export default function SupportPage() {
 
         {/* ✅ REAL STATS */}
         <div className="flex flex-wrap gap-6">
-          <StatCard title="Open" value={open} icon={FileText} />
-          <StatCard title="In Progress" value={inProgress} icon={Clock} />
-          <StatCard title="Resolved" value={resolved} icon={CheckCircle} />
+          <StatCard
+            title="Open"
+            value={open.toString()}
+            trend="0%"
+            icon={FileText}
+          />
+
+          <StatCard
+            title="In Progress"
+            value={inProgress.toString()}
+            trend="0%"
+            icon={Clock}
+          />
+
+          <StatCard
+            title="Resolved"
+            value={resolved.toString()}
+            trend="0%"
+            icon={CheckCircle}
+          />
         </div>
 
         {/* ✅ PASS REAL DATA */}
